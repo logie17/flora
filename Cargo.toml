@@ -3,4 +3,12 @@ name = "flora"
 version = "0.1.0"
 authors = ["Logan Bell <loganbell@gmail.com>"]
 
+[lib]
+name = "flora"
+path = "src/lib.rs"
+
+[[bin]]
+name = "mybin"
+path = "src/bin.rs"
+
 [dependencies]
