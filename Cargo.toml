@@ -1,0 +1,6 @@
+[package]
+name = "flora"
+version = "0.1.0"
+authors = ["Logan Bell <loganbell@gmail.com>"]
+
+[dependencies]
