@@ -1,7 +1,6 @@
 extern crate flora;
 
-use flora::FloraServer;
-
 pub fn main() {
-  let server = FloraServer::new("foo");
+  let server = flora::server::FloraServer::new("foo");
+  let r = flora::authorize::AuthorizeRequest{};
 }
