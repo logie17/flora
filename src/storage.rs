@@ -1,5 +1,7 @@
 pub struct Storage{}
 
+// TODO this will ultimately become a trait
+
 impl Storage {
     pub fn new() -> Storage {
         Storage{}
