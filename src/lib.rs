@@ -1,6 +1,7 @@
 pub use self::server::FloraServer;
 pub mod server;
 pub mod authorize;
+pub mod storage;
 
 #[cfg(test)]
 mod tests {
