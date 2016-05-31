@@ -17,17 +17,23 @@ impl <'a> AuthorizeRequest<'a> {
         }
     }
 
-    pub fn client_id(&self) -> &str {
+    pub fn client_id(&self) -> &'a str {
         return self.client_id
     }
 
 }
 
-pub struct AuthorizeResponse {}
+pub struct AuthorizeResponse<'a> {
+    redirect_uri: &'a str,
+}
 
-impl AuthorizeResponse {
-    pub fn new() -> AuthorizeResponse {  
-        AuthorizeResponse{}
+impl <'a>AuthorizeResponse<'a> {
+    pub fn new() -> AuthorizeResponse<'a> {  
+        AuthorizeResponse{redirect_uri:""}
+    }
+
+    pub fn redirect_uri(&'a mut self, redirect_uri: &'a str) {
+        self.redirect_uri = redirect_uri;
     }
 
 }
