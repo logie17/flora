@@ -15,7 +15,7 @@ impl <'a> FloraServer<'a> {
     pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse<'a>, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
         let client_id: &'a str = request.client_id();
-        if !client_id.is_empty() {
+        if client_id != "" {
             let client = self.storage.GetClient(client_id);
             if client.get_redirect_uri() == "" {
                 //todo better error handlling
