@@ -4,7 +4,7 @@ use super::client;
 
 pub struct FloraServer<'a> {
     name: &'a str,
-    storage: storage::Storage,
+    storage: storage::Storage<'a>,
 }
 
 impl <'a> FloraServer<'a> {
