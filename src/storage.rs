@@ -1,5 +1,6 @@
 use super::client;
 use std::collections::HashMap;
+use std::error::Error;
 
 pub struct Storage <'a>{
     clients: HashMap<&'a str, client::Client<'a>>
@@ -10,17 +11,17 @@ pub struct Storage <'a>{
 impl <'a>Storage<'a> {
     pub fn new() -> Storage<'a> {
         let mut s = Storage{clients: HashMap::new()};
-        s.clients.insert("foo", client::Client::new("foo", "12345", "http://www.foo.com"));
+        s.clients.insert("abc123", client::Client::new("abc123", "12345", "http://www.foo.com"));
         return s;
     }
 
-    pub fn GetClient(&self, client_id: &'a str) -> &client::Client<'a>{
-        // This obviously nzeeds a lookup table of sorts
-        if self.clients.contains_key(&client_id) {
-            let found = self.clients.get(&client_id).unwrap();
-            return found;
-        }
-        return None;
+    pub fn GetClient(&self, client_id: &'a str) -> Result<&client::Client<'a>, String> {
+        let o = self.clients.get(&client_id);
+        let found = match o {
+            Some(o) => Ok(o),
+            None => Err("No client id was found!".to_string()),
+        };
+        return found;
     }
 }
 
@@ -29,7 +30,11 @@ mod tests {
     #[test]
     fn storage_lookup() {
         let s = super::Storage::new();
-        assert_eq!(s.GetClient("abc").get_id(),("abc"));
+        let client = match s.GetClient("abc123") {
+            Ok(client) => client,
+            Err(err) => panic!("{}", err),
+        };
+        assert_eq!(client.get_id(),"abc123");
     }
 }
 
