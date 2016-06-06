@@ -17,12 +17,22 @@ impl <'a> FloraServer<'a> {
         let client_id: &'a str = request.client_id();
         if client_id != "" {
             let client = self.storage.GetClient(client_id);
-            if client.get_redirect_uri() == "" {
-                //todo better error handlling
-            }
-            let redirect_uri: &'a str = client.get_redirect_uri();
-            response.redirect_uri(redirect_uri);
-            return true;
+            let return_val = match client {
+                Ok(client) => {
+                    if client.get_redirect_uri() == "" {
+                        //todo better error handlling
+                    }
+                    let redirect_uri: &'a str = client.get_redirect_uri();
+                    response.redirect_uri(redirect_uri);
+                    true
+                },
+                Err(e) => {
+                    print!("BOOM! {}", e);
+                    false
+                }
+            };
+            return return_val;
+            
         }
 
         return false;
