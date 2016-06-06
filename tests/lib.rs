@@ -12,7 +12,7 @@ fn authorization_code_flow_success() {
 #[test]
 fn authorization_code_flow_failure() {
     let server = flora::server::FloraServer::new("foo");
-    let auth_request = flora::authorize::AuthorizeRequest::new("abc123", "","","");
+    let auth_request = flora::authorize::AuthorizeRequest::new("not-found", "","","");
     let mut auth_response = flora::authorize::AuthorizeResponse::new();
     let is_authorized = server.HandleAuthorizeRequest(&mut auth_response, &auth_request);
     assert_eq!(is_authorized, false);
