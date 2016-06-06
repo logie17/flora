@@ -27,7 +27,7 @@ impl <'a> FloraServer<'a> {
                     true
                 },
                 Err(e) => {
-                    print!("BOOM! {}", e);
+                    print!("Here we throw a 5xx/4xx! {}", e);
                     false
                 }
             };
