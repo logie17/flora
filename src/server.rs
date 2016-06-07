@@ -38,4 +38,8 @@ impl <'a> FloraServer<'a> {
         return false;
     }
 
+    pub fn FinishAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse<'a>, request: &'a authorize::AuthorizeRequest) {
+
+    }
+
 }

@@ -25,15 +25,25 @@ impl <'a> AuthorizeRequest<'a> {
 
 pub struct AuthorizeResponse<'a> {
     redirect_uri: &'a str,
+    code: &'a str,
+    state: &'a str,
 }
 
 impl <'a>AuthorizeResponse<'a> {
     pub fn new() -> AuthorizeResponse<'a> {  
-        AuthorizeResponse{redirect_uri:""}
+        AuthorizeResponse{redirect_uri:"", code:"", state: ""}
     }
 
     pub fn redirect_uri(&'a mut self, redirect_uri: &'a str) {
         self.redirect_uri = redirect_uri;
+    }
+
+    pub fn code(&'a mut self, code: &'a str) {
+        self.code = code;
+    }
+
+    pub fn state(&'a mut self, state: &'a str) {
+        self.state = state;
     }
 
 }
