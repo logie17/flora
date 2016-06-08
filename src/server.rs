@@ -8,6 +8,15 @@ pub struct FloraServer<'a> {
 }
 
 impl <'a> FloraServer<'a> {
+    /// Constructs a new `FloraServer`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use flora::FloraServer;
+    ///
+    /// let server = flora::FloraServer::new("name of server");
+    /// ```
     pub fn new(name: &'a str) -> FloraServer<'a> {
         FloraServer{name:name, storage: storage::Storage::new()}
     }
