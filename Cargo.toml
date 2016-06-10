@@ -12,3 +12,4 @@ name = "mybin"
 path = "src/bin.rs"
 
 [dependencies]
+uuid = "0.2"
