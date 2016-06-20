@@ -1,6 +1,7 @@
 use super::authorize;
 use super::storage;
 use super::client;
+use uuid::Uuid;
 
 pub struct FloraServer<'a> {
     name: &'a str,
@@ -48,7 +49,7 @@ impl <'a> FloraServer<'a> {
     }
 
     pub fn FinishAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse<'a>, request: &'a authorize::AuthorizeRequest) {
-
+        let my_uuid = Uuid::new_v4();
     }
 
 }
