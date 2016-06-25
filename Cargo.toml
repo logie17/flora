@@ -7,10 +7,6 @@ authors = ["Logan Bell <loganbell@gmail.com>"]
 name = "flora"
 path = "src/lib.rs"
 
-[[bin]]
-name = "mybin"
-path = "src/bin.rs"
-
 [dependencies]
 uuid = { version = "0.2", features = ["v4"] }
 regex = "0.1"
