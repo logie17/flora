@@ -1,6 +1,7 @@
 use super::authorize;
 use super::storage;
 use super::client;
+extern crate uuid;
 use uuid::Uuid;
 
 pub struct FloraServer<'a> {
@@ -22,7 +23,7 @@ impl <'a> FloraServer<'a> {
         FloraServer{name:name, storage: storage::Storage::new()}
     }
 
-    pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse<'a>, request: &'a authorize::AuthorizeRequest) -> bool {
+    pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
         let client_id: &'a str = request.client_id();
         if client_id != "" {
@@ -33,7 +34,7 @@ impl <'a> FloraServer<'a> {
                         //todo better error handlling
                     }
                     let redirect_uri: &'a str = client.get_redirect_uri();
-                    response.redirect_uri(redirect_uri);
+                    response.redirect_uri(redirect_uri.to_string());
                     true
                 },
                 Err(e) => {
@@ -48,8 +49,9 @@ impl <'a> FloraServer<'a> {
         return false;
     }
 
-    pub fn FinishAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse<'a>, request: &'a authorize::AuthorizeRequest) {
-        let my_uuid = Uuid::new_v4();
+    pub fn FinishAuthorizeRequest(&self, response: &mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) {
+        let v4 = Uuid::new_v4();
+        response.code(v4.urn().to_string());
     }
 
 }
