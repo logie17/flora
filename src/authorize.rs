@@ -23,26 +23,30 @@ impl <'a> AuthorizeRequest<'a> {
 
 }
 
-pub struct AuthorizeResponse<'a> {
-    redirect_uri: &'a str,
-    code: &'a str,
-    state: &'a str,
+pub struct AuthorizeResponse {
+    redirect_uri: String,
+    code: String,
+    state: String,
 }
 
-impl <'a>AuthorizeResponse<'a> {
-    pub fn new() -> AuthorizeResponse<'a> {  
-        AuthorizeResponse{redirect_uri:"", code:"", state: ""}
+impl <'a>AuthorizeResponse {
+    pub fn new() -> AuthorizeResponse {  
+        AuthorizeResponse{redirect_uri:"".to_string(), code:"".to_string(), state: "".to_string()}
     }
 
-    pub fn redirect_uri(&'a mut self, redirect_uri: &'a str) {
+    pub fn redirect_uri(&'a mut self, redirect_uri: String) {
         self.redirect_uri = redirect_uri;
     }
 
-    pub fn code(&'a mut self, code: &'a str) {
+    pub fn code(&'a mut self, code: String) {
         self.code = code;
     }
 
-    pub fn state(&'a mut self, state: &'a str) {
+    pub fn get_code(&'a self) -> &String {
+        return &self.code;
+    }
+
+    pub fn state(&'a mut self, state: String) {
         self.state = state;
     }
 
