@@ -27,6 +27,7 @@ pub struct AuthorizeResponse {
     redirect_uri: String,
     code: String,
     state: String,
+//    user_data: T,
 }
 
 impl <'a>AuthorizeResponse {

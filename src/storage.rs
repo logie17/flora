@@ -23,12 +23,16 @@ impl <'a>Storage<'a> {
         };
         return found;
     }
+
+    pub fn save_client(&mut self, client: client::Client) {
+        
+    }
 }
 
 #[cfg(test)]
 mod tests {
     #[test]
-    fn storage_lookup() {
+    fn storage_lookup_and_save() {
         let s = super::Storage::new();
         let client = match s.GetClient("abc123") {
             Ok(client) => client,
@@ -36,6 +40,7 @@ mod tests {
         };
         assert_eq!(client.get_id(),"abc123");
     }
+
 }
 
 

@@ -23,6 +23,13 @@ impl <'a> FloraServer<'a> {
         FloraServer{name:name, storage: storage::Storage::new()}
     }
 
+    /// Does initial this will return true of false.
+    ///
+    /// # Arguments 
+    ///
+    /// * `response` - An AuthorizeResponse object.
+    /// * `request`  - An AuthorizeRequest object.
+    /// 
     pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
         let client_id: &'a str = request.client_id();
@@ -49,6 +56,13 @@ impl <'a> FloraServer<'a> {
         return false;
     }
 
+    /// Decorates the AuthorizeResponse with needed return data.
+    ///
+    /// # Arguments
+    ///
+    /// * `response` - An AuthorizeResponse object.
+    /// * `request`  - An AuthorizeRequest object.
+    /// 
     pub fn FinishAuthorizeRequest(&self, response: &mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) {
         let v4 = Uuid::new_v4();
         response.code(v4.urn().to_string());
