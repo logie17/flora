@@ -11,7 +11,7 @@ fn authorization_code_flow_success() {
     let is_authorized = server.HandleAuthorizeRequest(&mut auth_response, &auth_request);
     assert_eq!(is_authorized, true);
 
-    server.FinishAuthorizeRequest(&mut auth_response, &auth_request);
+    server.FinishAuthorizeRequest(&mut auth_response, &auth_request, is_authorized);
     let re = Regex::new(r"^.*$").unwrap();
     assert!(re.is_match(auth_response.get_code()));
 }

@@ -27,12 +27,21 @@ pub struct AuthorizeResponse {
     redirect_uri: String,
     code: String,
     state: String,
-//    user_data: T,
+    error_id: String,
+    error_description: String,
+    is_error: bool,
 }
 
 impl <'a>AuthorizeResponse {
     pub fn new() -> AuthorizeResponse {  
-        AuthorizeResponse{redirect_uri:"".to_string(), code:"".to_string(), state: "".to_string()}
+        AuthorizeResponse{
+            redirect_uri:"".to_string(),
+            code:"".to_string(),
+            state: "".to_string(),
+            error_id: "".to_string(),
+            error_description: "".to_string(),
+            is_error: false
+        }
     }
 
     pub fn redirect_uri(&'a mut self, redirect_uri: String) {
@@ -51,6 +60,11 @@ impl <'a>AuthorizeResponse {
         self.state = state;
     }
 
+    pub fn set_error_state(&'a mut self, error_id: String, description: String) {
+        self.is_error = true;
+        self.error_id = error_id;
+        self.error_description = description;
+    }
 }
 
 pub struct AuthorizeData {
@@ -73,12 +87,13 @@ impl <'a>AuthorizeData {
         self.code = code;
     }
 
-    pub fn get_code(&'a self) -> &'a String {
+    pub fn get_code(&'a self) -> &String {
         return &self.code;
     }
 
     pub fn state(&'a mut self, state: String) {
         self.state = state;
     }
+
 
 }
