@@ -4,7 +4,7 @@ use regex::Regex;
 
 #[test]
 fn authorization_code_flow_success() {
-    let server = flora::server::FloraServer::new("foo");
+    let mut server = flora::server::FloraServer::new("foo");
     let auth_request = flora::authorize::AuthorizeRequest::new("abc123", "http://www.foo.com","","");
     let mut auth_response = flora::authorize::AuthorizeResponse::new();
 
