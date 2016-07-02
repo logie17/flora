@@ -1,16 +1,18 @@
 use super::client;
+use super::authorize;
 use std::collections::HashMap;
 use std::error::Error;
 
 pub struct Storage <'a>{
-    clients: HashMap<&'a str, client::Client<'a>>
+    clients: HashMap<&'a str, client::Client<'a>>,
+    authorizations: HashMap<String, authorize::AuthorizeData>
 }
 
 // TODO this will ultimately become a trait
 
 impl <'a>Storage<'a> {
     pub fn new() -> Storage<'a> {
-        let mut s = Storage{clients: HashMap::new()};
+        let mut s = Storage{clients: HashMap::new(), authorizations: HashMap::new()};
         s.clients.insert("abc123", client::Client::new("abc123", "12345", "http://www.foo.com"));
         return s;
     }
@@ -26,6 +28,10 @@ impl <'a>Storage<'a> {
 
     pub fn save_client(&mut self, client: client::Client) {
         
+    }
+
+    pub fn save_authorize(&mut self, authorize_data: authorize::AuthorizeData) {
+        self.authorizations.insert(authorize_data.get_code().clone(), authorize_data);
     }
 }
 
