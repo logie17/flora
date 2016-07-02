@@ -52,3 +52,33 @@ impl <'a>AuthorizeResponse {
     }
 
 }
+
+pub struct AuthorizeData {
+    redirect_uri: String,
+    code: String,
+    state: String,
+//    user_data: T,
+}
+
+impl <'a>AuthorizeData {
+    pub fn new(code: String) -> AuthorizeData {  
+        AuthorizeData{redirect_uri:"".to_string(), code:code, state: "".to_string()}
+    }
+
+    pub fn redirect_uri(&'a mut self, redirect_uri: String) {
+        self.redirect_uri = redirect_uri;
+    }
+
+    pub fn code(&'a mut self, code: String) {
+        self.code = code;
+    }
+
+    pub fn get_code(&'a self) -> &'a String {
+        return &self.code;
+    }
+
+    pub fn state(&'a mut self, state: String) {
+        self.state = state;
+    }
+
+}
