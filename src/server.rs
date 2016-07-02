@@ -63,9 +63,12 @@ impl <'a> FloraServer<'a> {
     /// * `response` - An AuthorizeResponse object.
     /// * `request`  - An AuthorizeRequest object.
     /// 
-    pub fn FinishAuthorizeRequest(&self, response: &mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) {
+    pub fn FinishAuthorizeRequest(&mut self, response: &mut authorize::AuthorizeResponse, request: &authorize::AuthorizeRequest) {
         let v4 = Uuid::new_v4();
-        response.code(v4.urn().to_string());
+        let code = v4.urn().to_string();
+        let ret = authorize::AuthorizeData::new(code.clone());
+        self.storage.save_authorize(ret);
+        response.code(code);
     }
 
 }
