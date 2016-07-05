@@ -5,6 +5,7 @@ pub mod server;
 pub mod authorize;
 pub mod storage;
 pub mod client;
+pub mod error;
 
 #[cfg(test)]
 mod tests {

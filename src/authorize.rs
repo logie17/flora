@@ -21,6 +21,10 @@ impl <'a> AuthorizeRequest<'a> {
         return self.client_id
     }
 
+    pub fn state(&self) -> &'a str {
+        return self.state
+    }
+
 }
 
 pub struct AuthorizeResponse {
@@ -30,6 +34,7 @@ pub struct AuthorizeResponse {
     error_id: String,
     error_description: String,
     is_error: bool,
+    internal_error: String,
 }
 
 impl <'a>AuthorizeResponse {
@@ -40,7 +45,8 @@ impl <'a>AuthorizeResponse {
             state: "".to_string(),
             error_id: "".to_string(),
             error_description: "".to_string(),
-            is_error: false
+            is_error: false,
+            internal_error: "".to_string(),
         }
     }
 
@@ -60,10 +66,21 @@ impl <'a>AuthorizeResponse {
         self.state = state;
     }
 
-    pub fn set_error_state(&'a mut self, error_id: String, description: String) {
+    pub fn is_error(&'a self) -> bool {
+        return self.is_error;
+    }
+
+    pub fn internal_error(&'a mut self, error: String) {
+        self.internal_error = error;
+    }
+
+    pub fn set_error_state(&'a mut self, error_id: String, description: String, state: String) {
         self.is_error = true;
         self.error_id = error_id;
         self.error_description = description;
+        if self.state == "" {
+            self.state = state
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 use super::authorize;
 use super::storage;
 use super::client;
+use super::error;
 extern crate uuid;
 use uuid::Uuid;
 
@@ -38,14 +39,15 @@ impl <'a> FloraServer<'a> {
             let return_val = match client {
                 Ok(client) => {
                     if client.get_redirect_uri() == "" {
-                        //todo better error handlling
+                        response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), request.state().to_string());
                     }
                     let redirect_uri: &'a str = client.get_redirect_uri();
                     response.redirect_uri(redirect_uri.to_string());
                     true
                 },
                 Err(e) => {
-                    print!("Here we throw a 5xx/4xx! {}", e);
+                    response.set_error_state(error::SERVER_ERROR.to_string(), "".to_string(), request.state().to_string());
+                    response.internal_error(e);
                     false
                 }
             };
@@ -64,6 +66,10 @@ impl <'a> FloraServer<'a> {
     /// * `request`  - An AuthorizeRequest object.
     /// 
     pub fn FinishAuthorizeRequest(&mut self, response: &mut authorize::AuthorizeResponse, request: &authorize::AuthorizeRequest, is_authorized: bool) {
+        if response.is_error() {
+            return
+        }
+
         if is_authorized {
             let v4 = Uuid::new_v4();
             let code = v4.urn().to_string();
@@ -71,7 +77,7 @@ impl <'a> FloraServer<'a> {
             self.storage.save_authorize(ret);
             response.code(code);
         } else {
-            response.set_error_state("123".to_string(), "foo".to_string());
+            response.set_error_state(error::ACCESS_DENIED.to_string(), "".to_string(), request.state().to_string());
         }
     }
 
