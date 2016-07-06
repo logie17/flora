@@ -1,6 +1,7 @@
 pub static ACCESS_DENIED: &'static str = "access_denied";
 pub static SERVER_ERROR: &'static str = "server_error";
 pub static UNAUTHORIZED_CLIENT: &'static str = "unauthorized_client";
+pub static UNSUPPORTED_RESPONSE_TYPE: &'static str = "unsupported_response_type";
 
 pub struct Error {
     id: String,
