@@ -1,5 +1,6 @@
 pub struct AuthorizeRequest<'a> {
     client_id: &'a str,
+    response_type: &'a str,
     redirect_uri: &'a str,
     state: &'a str,
     scope: &'a str,
@@ -7,12 +8,13 @@ pub struct AuthorizeRequest<'a> {
 }
 
 impl <'a> AuthorizeRequest<'a> {
-    pub fn new(client_id: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str) -> AuthorizeRequest<'a> {  
+    pub fn new(client_id: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str) -> AuthorizeRequest<'a> {  
         AuthorizeRequest{
             client_id: client_id,
             redirect_uri: redirect_uri,
             state: state,
             scope:scope,
+            response_type: response_type,
             is_authorized: false,
         }
     }
@@ -25,11 +27,17 @@ impl <'a> AuthorizeRequest<'a> {
         return self.state
     }
 
+    pub fn response_type(&self) -> &'a str {
+        return self.response_type
+    }
+
 }
 
 pub struct AuthorizeResponse {
     redirect_uri: String,
     code: String,
+    code_type: String,
+    expiration: u32,
     state: String,
     error_id: String,
     error_description: String,
@@ -41,6 +49,8 @@ impl <'a>AuthorizeResponse {
     pub fn new() -> AuthorizeResponse {  
         AuthorizeResponse{
             redirect_uri:"".to_string(),
+            expiration: 0,
+            code_type: "".to_string(),
             code:"".to_string(),
             state: "".to_string(),
             error_id: "".to_string(),
@@ -56,6 +66,18 @@ impl <'a>AuthorizeResponse {
 
     pub fn code(&'a mut self, code: String) {
         self.code = code;
+    }
+
+    pub fn code_type(&'a mut self, code_type: String) {
+        self.code_type = code_type;
+    }
+
+    pub fn expiration(&'a mut self, expiration: u32) {
+        self.expiration = expiration;
+    }
+
+    pub fn get_expiration(&'a self) -> u32 {
+        return self.expiration;
     }
 
     pub fn get_code(&'a self) -> &String {
