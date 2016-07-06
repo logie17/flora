@@ -10,6 +10,9 @@ pub struct FloraServer<'a> {
     storage: storage::Storage<'a>,
 }
 
+const CODE: &'static str = "code";
+const AUTH_EXPIRE: u32 = 250;
+
 impl <'a> FloraServer<'a> {
     /// Constructs a new `FloraServer`.
     ///
@@ -34,6 +37,7 @@ impl <'a> FloraServer<'a> {
     pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
         let client_id: &'a str = request.client_id();
+        let response_type: &'a str = request.response_type();
         if client_id != "" {
             let client = self.storage.GetClient(client_id);
             let return_val = match client {
@@ -42,8 +46,19 @@ impl <'a> FloraServer<'a> {
                         response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), request.state().to_string());
                     }
                     let redirect_uri: &'a str = client.get_redirect_uri();
+                    // TODO, add multiple redirect_uri support
                     response.redirect_uri(redirect_uri.to_string());
-                    true
+                    return match response_type {
+                        CODE => {
+                            response.code_type(CODE.to_string());
+                            response.expiration(AUTH_EXPIRE);
+                            true
+                        },
+                        _ => { 
+                            response.set_error_state(error::UNSUPPORTED_RESPONSE_TYPE.to_string(), "".to_string(), request.state().to_string());
+                            false
+                        }
+                    };
                 },
                 Err(e) => {
                     response.set_error_state(error::SERVER_ERROR.to_string(), "".to_string(), request.state().to_string());
