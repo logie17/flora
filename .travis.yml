@@ -1,0 +1,5 @@
+language: rust
+rust:
+ - stable
+rust:
+  - 1.8.0
