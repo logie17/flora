@@ -11,6 +11,7 @@ pub struct FloraServer<'a> {
 }
 
 const CODE: &'static str = "code";
+
 const AUTH_EXPIRE: u32 = 250;
 
 impl <'a> FloraServer<'a> {
@@ -94,6 +95,27 @@ impl <'a> FloraServer<'a> {
         } else {
             response.set_error_state(error::ACCESS_DENIED.to_string(), "".to_string(), request.state().to_string());
         }
+    }
+
+    /// Does initial this will return true of false.
+    ///
+    /// # Arguments 
+    ///
+    /// * `response` - An AuthorizeResponse object.
+    /// * `request`  - An AuthorizeRequest object.
+    /// 
+    pub fn HandleAccessRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
+        let grant_type: &'a str = request.grant_type();
+        let return_val = match grant_type {
+            CODE => {
+                true
+            },
+            _ => {
+                response.set_error_state(error::UNSUPPORTED_GRANT_TYPE.to_string(), "".to_string(), "".to_string());
+                false
+            }
+        };
+        return return_val;
     }
 
 }

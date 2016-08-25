@@ -4,11 +4,12 @@ pub struct AuthorizeRequest<'a> {
     redirect_uri: &'a str,
     state: &'a str,
     scope: &'a str,
+    grant_type: &'a str,
     is_authorized: bool
 }
 
 impl <'a> AuthorizeRequest<'a> {
-    pub fn new(client_id: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str) -> AuthorizeRequest<'a> {  
+    pub fn new(client_id: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str, grant_type: &'a str) -> AuthorizeRequest<'a> {  
         AuthorizeRequest{
             client_id: client_id,
             redirect_uri: redirect_uri,
@@ -16,6 +17,7 @@ impl <'a> AuthorizeRequest<'a> {
             scope:scope,
             response_type: response_type,
             is_authorized: false,
+            grant_type: grant_type,
         }
     }
 
@@ -29,6 +31,10 @@ impl <'a> AuthorizeRequest<'a> {
 
     pub fn response_type(&self) -> &'a str {
         return self.response_type
+    }
+
+    pub fn grant_type(&self) -> &'a str {
+        return self.grant_type
     }
 
 }
