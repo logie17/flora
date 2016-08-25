@@ -1,5 +1,6 @@
 pub struct AuthorizeRequest<'a> {
     client_id: &'a str,
+    client_secret: &'a str,
     response_type: &'a str,
     redirect_uri: &'a str,
     state: &'a str,
@@ -9,9 +10,10 @@ pub struct AuthorizeRequest<'a> {
 }
 
 impl <'a> AuthorizeRequest<'a> {
-    pub fn new(client_id: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str, grant_type: &'a str) -> AuthorizeRequest<'a> {  
+    pub fn new(client_id: &'a str, client_secret: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str, grant_type: &'a str) -> AuthorizeRequest<'a> {  
         AuthorizeRequest{
             client_id: client_id,
+            client_secret: client_secret,
             redirect_uri: redirect_uri,
             state: state,
             scope:scope,
@@ -23,6 +25,10 @@ impl <'a> AuthorizeRequest<'a> {
 
     pub fn client_id(&self) -> &'a str {
         return self.client_id
+    }
+
+    pub fn client_secret(&self) -> &'a str {
+        return self.client_secret
     }
 
     pub fn state(&self) -> &'a str {

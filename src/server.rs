@@ -10,9 +10,24 @@ pub struct FloraServer<'a> {
     storage: storage::Storage<'a>,
 }
 
-const CODE: &'static str = "code";
+struct BasicAuth<'a> {
+    client_id: &'a str,
+    client_secret: &'a str,
+}
 
+const CODE: &'static str = "code";
 const AUTH_EXPIRE: u32 = 250;
+
+impl <'a> BasicAuth<'a> {
+    pub fn client_id(&self) -> &'a str {
+        return self.client_id
+    }
+
+    pub fn client_secret(&self) -> &'a str {
+        return self.client_secret
+    }
+}
+
 
 impl <'a> FloraServer<'a> {
     /// Constructs a new `FloraServer`.
@@ -108,7 +123,27 @@ impl <'a> FloraServer<'a> {
         let grant_type: &'a str = request.grant_type();
         let return_val = match grant_type {
             CODE => {
-                true
+                let basic_auth = self.getClientAuth(request);
+                let client = self.storage.GetClient(basic_auth.client_id());
+                return match client {
+                    Ok(client) => {
+                        if client.get_redirect_uri() == "" {
+                            response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), "".to_string());
+                            return false
+                        }
+
+                        if client.get_secret() != basic_auth.client_secret() {
+                            response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), "".to_string());
+                            return false
+                        }
+                        true
+                    },
+                    Err(e) => {
+                        response.set_error_state(error::SERVER_ERROR.to_string(), "".to_string(), request.state().to_string());
+                        response.internal_error(e);
+                        false
+                    }
+                };
             },
             _ => {
                 response.set_error_state(error::UNSUPPORTED_GRANT_TYPE.to_string(), "".to_string(), "".to_string());
@@ -117,5 +152,14 @@ impl <'a> FloraServer<'a> {
         };
         return return_val;
     }
+
+    // TODO - This sould probably be in util
+    fn getClientAuth(&self, request: &'a authorize::AuthorizeRequest) -> BasicAuth<'a> {
+        // Right now we will assume these are passed in via the request object
+        // TODO: We will need a way to insped HTTP headers
+        BasicAuth{client_id:request.client_id(), client_secret: request.client_secret()}
+    }
+
+    
 
 }
