@@ -1,7 +1,6 @@
 use super::client;
 use super::authorize;
 use std::collections::HashMap;
-use std::error::Error;
 
 pub struct Storage <'a>{
     clients: HashMap<&'a str, client::Client<'a>>,
@@ -17,7 +16,7 @@ impl <'a>Storage<'a> {
         return s;
     }
 
-    pub fn GetClient(&self, client_id: &'a str) -> Result<&client::Client<'a>, String> {
+    pub fn get_client(&self, client_id: &'a str) -> Result<&client::Client<'a>, String> {
         let o = self.clients.get(&client_id);
         let found = match o {
             Some(o) => Ok(o),
@@ -27,7 +26,7 @@ impl <'a>Storage<'a> {
     }
 
     pub fn save_client(&mut self, client: client::Client) {
-        
+
     }
 
     pub fn save_authorize(&mut self, authorize_data: authorize::AuthorizeData) {
@@ -40,7 +39,7 @@ mod tests {
     #[test]
     fn storage_lookup_and_save() {
         let s = super::Storage::new();
-        let client = match s.GetClient("abc123") {
+        let client = match s.get_client("abc123") {
             Ok(client) => client,
             Err(err) => panic!("{}", err),
         };
@@ -48,5 +47,3 @@ mod tests {
     }
 
 }
-
-

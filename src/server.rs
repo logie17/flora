@@ -1,6 +1,5 @@
 use super::authorize;
 use super::storage;
-use super::client;
 use super::error;
 extern crate uuid;
 use uuid::Uuid;
@@ -45,17 +44,17 @@ impl <'a> FloraServer<'a> {
 
     /// Does initial this will return true of false.
     ///
-    /// # Arguments 
+    /// # Arguments
     ///
     /// * `response` - An AuthorizeResponse object.
     /// * `request`  - An AuthorizeRequest object.
-    /// 
-    pub fn HandleAuthorizeRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
+    ///
+    pub fn handle_authorize_request(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
         let client_id: &'a str = request.client_id();
         let response_type: &'a str = request.response_type();
         if client_id != "" {
-            let client = self.storage.GetClient(client_id);
+            let client = self.storage.get_client(client_id);
             let return_val = match client {
                 Ok(client) => {
                     if client.get_redirect_uri() == "" {
@@ -70,7 +69,7 @@ impl <'a> FloraServer<'a> {
                             response.expiration(AUTH_EXPIRE);
                             true
                         },
-                        _ => { 
+                        _ => {
                             response.set_error_state(error::UNSUPPORTED_RESPONSE_TYPE.to_string(), "".to_string(), request.state().to_string());
                             false
                         }
@@ -83,7 +82,7 @@ impl <'a> FloraServer<'a> {
                 }
             };
             return return_val;
-            
+
         }
 
         return false;
@@ -95,8 +94,8 @@ impl <'a> FloraServer<'a> {
     ///
     /// * `response` - An AuthorizeResponse object.
     /// * `request`  - An AuthorizeRequest object.
-    /// 
-    pub fn FinishAuthorizeRequest(&mut self, response: &mut authorize::AuthorizeResponse, request: &authorize::AuthorizeRequest, is_authorized: bool) {
+    ///
+    pub fn finish_authorize_request(&mut self, response: &mut authorize::AuthorizeResponse, request: &authorize::AuthorizeRequest, is_authorized: bool) {
         if response.is_error() {
             return
         }
@@ -114,17 +113,17 @@ impl <'a> FloraServer<'a> {
 
     /// Does initial this will return true of false.
     ///
-    /// # Arguments 
+    /// # Arguments
     ///
     /// * `response` - An AuthorizeResponse object.
     /// * `request`  - An AuthorizeRequest object.
-    /// 
-    pub fn HandleAccessRequest(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
+    ///
+    pub fn handle_access_request(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         let grant_type: &'a str = request.grant_type();
         let return_val = match grant_type {
             CODE => {
-                let basic_auth = self.getClientAuth(request);
-                let client = self.storage.GetClient(basic_auth.client_id());
+                let basic_auth = self.get_client_auth(request);
+                let client = self.storage.get_client(basic_auth.client_id());
                 return match client {
                     Ok(client) => {
                         if client.get_redirect_uri() == "" {
@@ -154,12 +153,12 @@ impl <'a> FloraServer<'a> {
     }
 
     // TODO - This sould probably be in util
-    fn getClientAuth(&self, request: &'a authorize::AuthorizeRequest) -> BasicAuth<'a> {
+    fn get_client_auth(&self, request: &'a authorize::AuthorizeRequest) -> BasicAuth<'a> {
         // Right now we will assume these are passed in via the request object
         // TODO: We will need a way to insped HTTP headers
         BasicAuth{client_id:request.client_id(), client_secret: request.client_secret()}
     }
 
-    
+
 
 }
