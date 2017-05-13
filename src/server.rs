@@ -2,7 +2,9 @@ use super::authorize;
 use super::storage;
 use super::error;
 extern crate uuid;
+extern crate base64;
 use uuid::Uuid;
+use base64::{encode};
 
 pub struct FloraServer<'a> {
     name: &'a str,
@@ -51,8 +53,8 @@ impl <'a> FloraServer<'a> {
     ///
     pub fn handle_authorize_request(&self, response: &'a mut authorize::AuthorizeResponse, request: &'a authorize::AuthorizeRequest) -> bool {
         // TODO decode redirect_uri
-        let client_id: &'a str = request.client_id();
-        let response_type: &'a str = request.response_type();
+        let client_id: &str = request.client_id();
+        let response_type: &str = request.response_type();
         if client_id != "" {
             let client = self.storage.get_client(client_id);
             let return_val = match client {
@@ -60,7 +62,7 @@ impl <'a> FloraServer<'a> {
                     if client.get_redirect_uri() == "" {
                         response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), request.state().to_string());
                     }
-                    let redirect_uri: &'a str = client.get_redirect_uri();
+                    let redirect_uri: &str = client.get_redirect_uri();
                     // TODO, add multiple redirect_uri support
                     response.redirect_uri(redirect_uri.to_string());
                     return match response_type {
@@ -102,7 +104,7 @@ impl <'a> FloraServer<'a> {
 
         if is_authorized {
             let v4 = Uuid::new_v4();
-            let code = v4.urn().to_string();
+            let code = encode(&v4.urn().to_string()).to_string();
             let ret = authorize::AuthorizeData::new(code.clone());
             self.storage.save_authorize(ret);
             response.code(code);
