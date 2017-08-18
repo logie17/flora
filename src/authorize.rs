@@ -1,7 +1,10 @@
+extern crate time;
+
 pub struct AuthorizeRequest<'a> {
     client_id: &'a str,
     client_secret: &'a str,
     response_type: &'a str,
+    code: String,
     redirect_uri: &'a str,
     state: &'a str,
     scope: &'a str,
@@ -10,7 +13,7 @@ pub struct AuthorizeRequest<'a> {
 }
 
 impl <'a> AuthorizeRequest<'a> {
-    pub fn new(client_id: &'a str, client_secret: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str, grant_type: &'a str) -> AuthorizeRequest<'a> {  
+    pub fn new(client_id: &'a str, client_secret: &'a str, redirect_uri: &'a str, state: &'a str, scope: &'a str, response_type: &'a str, grant_type: &'a str) -> AuthorizeRequest<'a> {
         AuthorizeRequest{
             client_id: client_id,
             client_secret: client_secret,
@@ -20,6 +23,7 @@ impl <'a> AuthorizeRequest<'a> {
             response_type: response_type,
             is_authorized: false,
             grant_type: grant_type,
+            code: "".to_string(),
         }
     }
 
@@ -39,8 +43,19 @@ impl <'a> AuthorizeRequest<'a> {
         return self.response_type
     }
 
+    pub fn redirect_uri(&self) -> &'a str {
+        return self.redirect_uri
+    }
+
     pub fn grant_type(&self) -> &'a str {
         return self.grant_type
+    }
+
+    pub fn code(&self) -> String {
+        return self.code;
+    }
+    pub fn set_code(&mut self, v: String) {
+        self.code = v;
     }
 
 }
@@ -58,7 +73,7 @@ pub struct AuthorizeResponse {
 }
 
 impl <'a>AuthorizeResponse {
-    pub fn new() -> AuthorizeResponse {  
+    pub fn new() -> AuthorizeResponse {
         AuthorizeResponse{
             redirect_uri:"".to_string(),
             expiration: 0,
@@ -126,7 +141,7 @@ pub struct AuthorizeData {
 }
 
 impl <'a>AuthorizeData {
-    pub fn new(code: String) -> AuthorizeData {  
+    pub fn new(code: String) -> AuthorizeData {
         AuthorizeData{redirect_uri:"".to_string(), code:code, state: "".to_string()}
     }
 
@@ -147,4 +162,72 @@ impl <'a>AuthorizeData {
     }
 
 
+}
+
+pub struct AccessRequest<'a> {
+    client_id: &'a str,
+    access_type: &'a str,
+    code: &'a str,
+    redirect_uri: &'a str,
+    generate_refresh: bool,
+    expiration: &'a u32,
+}
+
+impl <'a> AccessRequest<'a> {
+    pub fn new(
+        client_id: &'a str,
+        access_type: &'a str,
+        code: &'a str,
+        redirect_uri: &'a str,
+        generate_refresh: bool,
+        expiration: &'a u32,
+    ) -> AccessRequest<'a> {
+        AccessRequest{
+            client_id: client_id,
+            access_type: access_type,
+            code: code,
+            redirect_uri: redirect_uri,
+            generate_refresh: generate_refresh,
+            expiration: expiration,
+        }
+    }
+}
+
+
+pub struct AccessData {
+    redirect_uri: String,
+    client_id: String,
+    access_token: String,
+    refresh_token: String,
+    created_on: f64,
+    expires_in: u32
+}
+
+impl <'a>AccessData {
+    pub fn new(client_id: String, access_token: String, refresh_token: String, expires_in: u32) -> AccessData {
+        AccessData{
+            redirect_uri:"".to_string(),
+            client_id:client_id,
+            access_token: "".to_string(),
+            refresh_token: "".to_string(),
+            expires_in: expires_in,
+            created_on: time::precise_time_s()
+        }
+    }
+
+    pub fn redirect_uri(&'a mut self, redirect_uri: String) {
+        self.redirect_uri = redirect_uri;
+    }
+
+    pub fn access_token(&'a mut self, access_token: String) {
+        self.access_token = access_token;
+    }
+
+    pub fn get_access_token(&'a self) -> &String {
+        return &self.access_token;
+    }
+
+    pub fn refresh_token(&'a mut self, refresh_token: String) {
+        self.refresh_token = refresh_token;
+    }
 }

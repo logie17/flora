@@ -30,7 +30,6 @@ fn authorization_code_flow_failure_invalid_grant_type() {
     server.finish_authorize_request(&mut auth_response, &auth_request, is_authorized);
     let re = Regex::new(r"^.*$").unwrap();
     assert!(re.is_match(auth_response.get_code()));
-
     let has_access = server.handle_access_request(&mut auth_response, &auth_request);
     assert_eq!(has_access, false);
 }

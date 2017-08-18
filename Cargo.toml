@@ -1,5 +1,5 @@
 [package]
-name = "flora"
+name    = "flora"
 version = "0.1.0"
 authors = ["Logan Bell <loganbell@gmail.com>"]
 
@@ -8,6 +8,7 @@ name = "flora"
 path = "src/lib.rs"
 
 [dependencies]
-uuid = { version = "0.2", features = ["v4"] }
 base64 = "~0.5.0"
-regex = "0.1"
+regex  = "0.1"
+time   = "0.1"
+uuid   = { version = "0.2", features = ["v4"] }

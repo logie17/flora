@@ -5,7 +5,6 @@ extern crate uuid;
 extern crate base64;
 use uuid::Uuid;
 use base64::{encode};
-
 pub struct FloraServer<'a> {
     name: &'a str,
     storage: storage::Storage<'a>,
@@ -18,6 +17,7 @@ struct BasicAuth<'a> {
 
 const CODE: &'static str = "code";
 const AUTH_EXPIRE: u32 = 250;
+const ACCESS_EXPIRES: u32 = 3600;
 
 impl <'a> BasicAuth<'a> {
     pub fn client_id(&self) -> &'a str {
@@ -137,6 +137,30 @@ impl <'a> FloraServer<'a> {
                             response.set_error_state(error::UNAUTHORIZED_CLIENT.to_string(), "".to_string(), "".to_string());
                             return false
                         }
+
+                        // Create Access Request
+                        let access_request = authorize::AccessRequest::new(
+                            client.get_id(),
+                            "CODE",
+                            &request.code(),
+                            &request.redirect_uri(),
+                            true,
+                            &ACCESS_EXPIRES,
+                        );
+
+                        let authorize = self.storage.get_authorize(&request.code());
+
+                        // if authorize {
+                        //     return false;
+                        // }
+
+                        // Load Authorize from storage
+
+
+                        // Check expiration
+
+
+
                         true
                     },
                     Err(e) => {
@@ -154,10 +178,26 @@ impl <'a> FloraServer<'a> {
         return return_val;
     }
 
+    pub fn finish_access_request(&mut self, response: &'a mut authorize::AuthorizeResponse, request: &'a mut authorize::AuthorizeRequest, is_authorized: bool) {
+        let redirect_uri: &str = request.redirect_uri();
+        if is_authorized {
+            let v4 = Uuid::new_v4();
+            let access_token = encode(&v4.urn().to_string()).to_string();
+            let refresh_token = encode(&v4.urn().to_string()).to_string();
+            let ret = authorize::AccessData::new(
+                "aabbcc".to_string(),
+                access_token,
+                refresh_token,
+                ACCESS_EXPIRES,
+            );
+            self.storage.save_access(ret);
+        }
+    }
+
     // TODO - This sould probably be in util
     fn get_client_auth(&self, request: &'a authorize::AuthorizeRequest) -> BasicAuth<'a> {
         // Right now we will assume these are passed in via the request object
-        // TODO: We will need a way to insped HTTP headers
+        // TODO: We will need a way to inspect HTTP headers
         BasicAuth{client_id:request.client_id(), client_secret: request.client_secret()}
     }
 
