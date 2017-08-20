@@ -6,7 +6,7 @@ pub struct Client <'a> {
 
 impl <'a, 'b, 'c> Client<'a> {
     pub fn new(id: &'a str, secret: &'a str, redirect_uri: &'a str) -> Client<'a> {
-        Client{id:id, secret: secret, redirect_uri: redirect_uri}
+        Client{id, secret, redirect_redirect_uri}
     }
 
     pub fn get_id(&self) -> &'a str {

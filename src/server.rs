@@ -41,7 +41,7 @@ impl <'a> FloraServer<'a> {
     /// let server = flora::FloraServer::new("name of server");
     /// ```
     pub fn new(name: &'a str) -> FloraServer<'a> {
-        FloraServer{name:name, storage: storage::Storage::new()}
+        FloraServer{name, storage: storage::Storage::new()}
     }
 
     /// Does initial this will return true of false.
